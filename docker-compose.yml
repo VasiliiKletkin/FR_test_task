@@ -1,6 +1,57 @@
 version: '3.4'
 
 services:
+  postgres:
+    image: postgres:12.12-alpine
+    container_name: postgres
+    restart: always
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+
+  redis:
+    image: redis:6.2-alpine
+    container_name: redis
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3.11-alpine
+    container_name: rabbitmq
+    restart: always
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    env_file:
+      - .env
+    ports:
+      - 5672:5672
+
+  celeryworker:
+    container_name: celeryworker
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    command: pipenv run celery -A core worker -l info --pool=prefork 
+    volumes:
+      - ./backend:/home/app/backend
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+  
+  celerybeat:
+    container_name: celerybeat
+    build:
+      context: backend/
+      dockerfile: Dockerfile
+    command: pipenv run celery -A core beat -l info
+    volumes:
+      - ./backend:/home/app/backend
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+
   backend:
     container_name: backend
     build:
@@ -13,3 +64,7 @@ services:
     ports:
       - 8000:8000      
     command: pipenv run python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - rabbitmq
+      - redis
+      - postgres

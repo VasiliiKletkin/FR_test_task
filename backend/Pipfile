@@ -5,6 +5,15 @@ name = "pypi"
 
 [packages]
 django = "*"
+django-model-utils = "*"
+django-phonenumber-field = "*"
+drf-spectacular = "*"
+drf-spectacular-sidecar = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
+psycopg2-binary = "*"
+celery = "*"
 
 [dev-packages]
 
