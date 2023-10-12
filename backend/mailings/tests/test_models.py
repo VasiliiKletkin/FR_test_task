@@ -29,10 +29,22 @@ class TestModel(APITestCase):
         self.assertEqual(client.phone_number, "71234567890")
 
     def test_creates_messages(self):
-        self.test_creates_mailings()
-        self.test_creates_clients()
+        mailing = Mailing.objects.create(
+            date_start=now(),
+            date_end=now(),
+            text="Simple text",
+            time_start=now().time(),
+            time_end=now().time(),
+            tag="crazy",
+        )        
+        client = Client.objects.create(
+            phone_number="71234567890",
+            mobile_operator_code="123",
+            tag="crazy",
+            timezone="UTC",
+        )        
         message = Message.objects.create(
-            sending_status="No sent", mailing_id=1, client_id=1
+            sending_status="No sent", mailing=mailing, client=client
         )
         self.assertIsInstance(message, Message)
         self.assertEqual(message.sending_status, "No sent")

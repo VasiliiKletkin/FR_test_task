@@ -44,11 +44,21 @@ class TestStat(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_stat(self):
-        self.test_mailing()
+        mail_create = {
+            "date_start": now(),
+            "date_end": now(),
+            "time_start": now().time(),
+            "time_end": now().time(),
+            "text": "Simple text",
+            "tag": "crazy",
+            "mobile_operator_code": "412",
+        }
+        response = self.client.post(
+            "http://127.0.0.1:8000/api/mailings/", mail_create)
         url = "http://127.0.0.1:8000/api/mailings"
-        response = self.client.get(f"{url}/1/info/")
+        response = self.client.get(f"{url}/4/info/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        response = self.client.get(f"{url}/2/info/")
+        response = self.client.get(f"{url}/5/info/")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         response = self.client.get(f"{url}/fullinfo/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)

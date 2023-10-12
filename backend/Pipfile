@@ -14,6 +14,7 @@ markdown = "*"
 django-filter = "*"
 psycopg2-binary = "*"
 celery = "*"
+requests = "*"
 
 [dev-packages]
 

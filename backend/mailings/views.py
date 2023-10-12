@@ -18,8 +18,7 @@ class MailingViewSet(ModelViewSet):
         """
         Summary data for a specific mailing list
         """
-        queryset_mailing = Mailing.objects.all()
-        get_object_or_404(queryset_mailing, pk=pk)
+        get_object_or_404(Mailing, pk=pk)
         queryset = Message.objects.filter(mailing_id=pk).all()
         serializer = MessageSerializer(queryset, many=True)
         return Response(serializer.data)
